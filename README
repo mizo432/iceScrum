@@ -1,1 +1,144 @@
+# iceScrum
 
+iceScrumは、[Scrum](https://www.scrumguides.org/) アジャイルプロジェクト管理フレームワークを実装したオープンソースのWebアプリケーションです。
+
+## 概要
+
+iceScrumは、プロダクトバックログの管理、スプリント計画、デイリースクラム、リリース管理、ポートフォリオ管理など、Scrumの主要なプラクティスをサポートします。
+
+## 技術スタック
+
+- **Java 25**
+- **Spring Boot 4.1.2**
+- **Spring Security** - 認証・認可
+- **Spring Data JPA** - データアクセス層
+- **Thymeleaf** - サーバーサイドテンプレートエンジン
+- **WebSocket** - リアルタイム通信
+- **JWT (jjwt)** - API認証
+- **Liquibase** - データベースマイグレーション
+- **iText 7** - PDF生成
+- **Google ZXing** - QRコード生成
+- **Logback + SLF4J** - ロギング
+
+## サポートデータベース
+
+- **PostgreSQL** (推奨)
+
+## テスト
+
+テストでは [Testcontainers](https://www.testcontainers.org/) を使用して、Dockerコンテナ上でPostgreSQLを起動します。
+
+## プロジェクト構造
+
+```
+iceScrum/
+├── build.gradle              # Gradleビルド設定
+├── docker-compose.yml        # PostgreSQLコンテナ設定
+├── settings.gradle           # Gradleプロジェクト設定
+├── src/
+│   └── main/
+│       ├── java/org/icescrum/
+│       │   ├── core/
+│       │   │   ├── domain/           # エンティティドメインモデル
+│       │   │   │   ├── Story.java        # ユーザーストーリー
+│       │   │   │   ├── Sprint.java       # スプリント
+│       │   │   │   ├── Backlog.java      # バックログ
+│       │   │   │   ├── Team.java         # チーム
+│       │   │   │   ├── User.java         # ユーザー
+│       │   │   │   ├── Project.java      # プロジェクト
+│       │   │   │   ├── Release.java      # リリース
+│       │   │   │   ├── Meeting.java      # ミーティング
+│       │   │   │   ├── Portfolio.java    # ポートフォリオ
+│       │   │   │   ├── Task.java         # タスク
+│       │   │   │   ├── Feature.java      # 機能
+│       │   │   │   ├── AcceptanceTest.java # 受け入れテスト
+│       │   │   │   ├── Invitation.java   # 招待
+│       │   │   │   ├── Widget.java       # ウィジェット
+│       │   │   │   ├── Window.java       # ウィンドウ
+│       │   │   │   ├── Actor.java        # 行為者
+│       │   │   │   ├── Activity.java     # アクティビティ
+│       │   │   │   ├── Cliche.java       # クリシェ
+│       │   │   │   ├── Hook.java         # フック
+│       │   │   │   ├── TimeBox.java      # タイムボックス
+│       │   │   │   ├── TimeBoxNotesTemplate.java # タイムボックスノートテンプレート
+│       │   │   │   ├── MetaData.java     # メタデータ
+│       │   │   │   ├── preferences/      # 設定関連エンティティ
+│       │   │   │   │   ├── ProjectPreferences.java
+│       │   │   │   │   └── UserPreferences.java
+│       │   │   │   └── security/         # セキュリティ関連エンティティ
+│       │   │   │       ├── AccessToken.java
+│       │   │   │       ├── Authority.java
+│       │   │   │       ├── AuthorizationCode.java
+│       │   │   │       ├── Client.java
+│       │   │   │       ├── RefreshToken.java
+│       │   │   │       ├── UserAuthority.java
+│       │   │   │       └── UserToken.java
+│       │   │   ├── repository/         # リポジトリ層
+│       │   │   │   └── UserRepository.java
+│       │   │   └── service/            # サービス層
+│       │   │       └── UserService.java
+│       │   └── web/
+│       │       ├── IceScrumApplication.java  # アプリケーションエントリポイント
+│       │       ├── config/               # 設定クラス
+│       │       │   ├── SecurityConfig.java     # セキュリティ設定
+│       │       │   ├── CustomUserDetailsService.java # カスタムユーザーDetailsService
+│       │       │   └── DataInitializer.java    # 初期データ設定
+│       │       └── controller/           # コントローラー
+│       │           ├── HomeController.java
+│       │           └── LoginController.java
+│       └── resources/
+│           ├── application.yml           # アプリケーション設定
+│           ├── logback-spring.xml        # ロギング設定
+│           ├── i18n/                     # 国際化リソース
+│           │   └── messages_ja.properties
+│           └── templates/                # Thymeleafテンプレート
+│               ├── home.html
+│               └── login.html
+└── src/test/                             # テストコード
+```
+
+## 開発環境での実行
+
+### 前提条件
+
+- Java 25
+- Gradle 8.x (Gradle Wrapper付属)
+
+### PostgreSQLの起動
+
+```bash
+docker-compose up -d
+```
+
+### アプリケーションの実行
+
+```bash
+./gradlew bootRun
+```
+
+アプリケーションは `http://localhost:8080` で起動します。
+
+## 設定
+
+主要な設定は `src/main/resources/application.yml` で行います。
+
+| プロパティ | 説明 | デフォルト |
+|---|---|---|
+| `server.port` | サーバーポート | `8080` |
+| `spring.datasource.url` | データベース接続URL | `jdbc:postgresql://localhost:5433/icescrum` |
+| `icescrum.registration.enable` | ユーザー登録の有効/無効 | `true` |
+| `icescrum.session-timeout-seconds` | セッションタイムアウト（秒） | `1800` |
+| `icescrum.timezone.default` | デフォルトタイムゾーン | `UTC` |
+| `icescrum.base-dir` | ベースディレクトリ | `${user.home}/icescrum` |
+
+## ビルド
+
+```bash
+./gradlew build
+```
+
+## ライセンス
+
+GNU Affero General Public License v3.0 (AGPL-3.0)
+
+詳細は [license.txt](license.txt) を参照してください。

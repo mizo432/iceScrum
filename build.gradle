@@ -1,0 +1,108 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.2'
+}
+
+group = 'org.icescrum'
+version = '7.55'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    all {
+        // Exclude all log4j dependencies - use SLF4J only
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot BOM for dependency version management
+    implementation platform('org.springframework.boot:spring-boot-dependencies:4.1.2')
+
+    // Spring Boot Starters (exclude default logging to use SLF4J only)
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-thymeleaf') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-security') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-validation') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-mail') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-websocket') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
+    // Logging - SLF4J with Logback only (no log4j dependencies)
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'ch.qos.logback:logback-core'
+
+    // Thymeleaf Extras
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    // Database
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Liquibase for database migrations
+    implementation 'org.liquibase:liquibase-core'
+
+    // Utilities
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'commons-io:commons-io:2.18.0'
+    implementation 'org.jsoup:jsoup:1.18.3'
+
+    // QR Code (replacement for xzing jars in lib/)
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.google.zxing:javase:3.5.3'
+
+    // JWT for API authentication
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // PDF generation - iText 7 Core (AGPL license)
+    implementation 'com.itextpdf:itext7-core:9.8.0'
+
+    // Spring Boot DevTools (development only)
+    compileOnly 'org.springframework.boot:spring-boot-devtools'
+
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Testcontainers for integration tests with PostgreSQL
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testRuntimeOnly 'org.testcontainers:testcontainers'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

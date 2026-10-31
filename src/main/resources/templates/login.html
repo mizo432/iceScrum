@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iceScrum - ログイン</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-container { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 2rem; width: 100%; max-width: 400px; }
+        h1 { color: #2c3e50; margin-bottom: 1.5rem; text-align: center; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #555; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+        input[type="text"]:focus, input[type="password"]:focus { outline: none; border-color: #3498db; }
+        .btn { width: 100%; padding: 0.75rem; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+        .btn:hover { background: #2980b9; }
+        .error { background: #fee; color: #c00; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; text-align: center; }
+        .success { background: #efe; color: #0a0; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h1>iceScrum</h1>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${msg}" class="success" th:text="${msg}"></div>
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">ユーザー名</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="password">パスワード</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn">ログイン</button>
+    </form>
+</div>
+</body>
+</html>

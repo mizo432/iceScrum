@@ -1,0 +1,99 @@
+# Test Configuration
+spring:
+  application:
+    name: iceScrum
+
+  # Database - Testcontainers PostgreSQL (configured via TestPostgresConfig)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/icescrum
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    # HikariCP Connection Pool
+    hikari:
+      pool-name: IceScrumTestPool
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  # Liquibase
+  liquibase:
+    enabled: false
+
+  # Thymeleaf
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+
+  # Internationalization
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  web:
+    locale: ja_JP
+    locale-resolver: fixed
+
+  # Mail (disabled for tests)
+  mail:
+    host: localhost
+    port: 25
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# Server
+server:
+  port: 0
+
+# iceScrum Configuration
+icescrum:
+  registration:
+    enable: true
+  login:
+    retrieve:
+      enable: false
+  invitation:
+    enable: false
+  user:
+    search:
+      enable: true
+  gravatar:
+    enable: true
+  announcement:
+    enable: true
+  session-timeout-seconds: 1800
+  timezone:
+    default: UTC
+  push:
+    enable: true
+  base-dir: ${user.home}/icescrum-test
+
+# Logging
+logging:
+  level:
+    org.icescrum: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
